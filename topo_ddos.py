@@ -4,10 +4,11 @@ from mininet.net import Mininet
 from mininet.node import RemoteController, OVSKernelSwitch
 from mininet.cli import CLI
 from mininet.log import setLogLevel
+from mininet.term import makeTerms
 
 def DDOSTopology():
     # Ustawiamy adres IP i port kontrolera (domyślny dla Ryu)
-    net = Mininet(controller=lambda name: RemoteController(name, ip='127.0.0.1', port=6633), 
+    net = Mininet(controller=lambda name: RemoteController(name, ip='127.0.0.1', port=6653), 
                   switch=OVSKernelSwitch, 
                   waitConnected=True)
 
@@ -24,7 +25,7 @@ def DDOSTopology():
     h4 = net.addHost('h4', ip='10.0.0.4/24')
     h5 = net.addHost('h5', ip='10.0.0.5/24')
     h6 = net.addHost('h6', ip='10.0.0.6/24') # Ofiara
-
+    hosts = [h1, h2, h3, h4, h5, h6]
     # 4. Dodaj Linki
     net.addLink(h1, s1)
     net.addLink(h2, s1)
@@ -32,9 +33,9 @@ def DDOSTopology():
     net.addLink(h4, s1)
     net.addLink(h5, s1)
     net.addLink(h6, s1) # Serwer ofiara
-
     # 5. Uruchom Sieć
     net.start()
+    makeTerms(hosts, title='Host')
     print("Mininet uruchomiony. Host 10.0.0.6 jest ofiarą.")
 
     # 6. Uruchom CLI Mininet
