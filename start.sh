@@ -1,21 +1,16 @@
 #!/bin/bash
 
-gnome-terminal --title="Mininet" -- /bin/bash -c \
-    "sudo mn -c;
-    
-gnome-terminal --title="Ryu Controler" -- /bin/bash -c \
-    "ryu-manager ryu.app.simple_switch_13 'ddos_detector.py'; \
-    echo '-- Controler has stopped --'; exec bash"
 
-sleep 2
+sudo lsof -t -i :6653 | xargs sudo kill -9
+#sudo kill -9 $(sudo lsof -t -i :6633)
+sudo mn -c
+echo "czysto"
+sleep 5
 
-# gnome-terminal --title="Mininet": -- /bin/bash -c \
-#     "sudo mn --controller=remote,ip=127.0.0.1,port=8000 \
-#     --switch=ovs,protocols=OpenFlow13 \
-#     --topo=tree,depth=2,fanout=2; \
-#     echo '-- Mininet has stopped --'; exec bash"
+ryu-manager ryu.conf ddos_detector.py > ryu.log 2>&1 &
+RYU_PID=$!
 
-gnome-terminal --title="Mininet" -- /bin/bash -c \
-    "sudo mn -c; \
-    sudo python3 'topo_ddos.py'; \
-    echo '-- Mininet has stopped'; exec bash"
+sleep 3
+
+
+sudo python3 topo_ddos.py 
